@@ -1,0 +1,63 @@
+# ----------------------------
+# Environment Variables
+# ----------------------------
+.env
+.env.*
+!.env.example
+
+# ----------------------------
+# Logs
+# ----------------------------
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ----------------------------
+# Dependencies
+# ----------------------------
+node_modules
+
+# ----------------------------
+# Build Output
+# ----------------------------
+dist
+dist-ssr
+.output
+.vinxi
+.tanstack/**
+.nitro
+
+# ----------------------------
+# Local Config
+# ----------------------------
+*.local
+
+# Wrangler / Cloudflare
+.wrangler/
+.dev.vars
+
+# ----------------------------
+# Editor Files
+# ----------------------------
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ----------------------------
+# Playwright
+# ----------------------------
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
