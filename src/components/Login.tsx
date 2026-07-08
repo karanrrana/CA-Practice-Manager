@@ -86,8 +86,8 @@ export function Login() {
         </form>
 
         <div className="mt-6 rounded-lg bg-muted/60 p-3 text-xs text-muted-foreground">
-          <p className="font-semibold text-foreground">Default admin</p>
-          <p className="mt-1">admin@practice.local / Admin@123</p>
+          {/* <p className="font-semibold text-foreground">Default admin</p>
+          <p className="mt-1">admin@practice.local / Admin@123</p> */}
           <p className="mt-1 italic">You'll be asked to change the password after first login.</p>
         </div>
       </div>
