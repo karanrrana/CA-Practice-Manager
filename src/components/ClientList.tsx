@@ -4,6 +4,7 @@ import { Plus, Search, Users, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DuplicateRecordDialog } from "@/components/DuplicateRecordDialog";
 import {
   Select,
   SelectContent,
@@ -75,7 +76,12 @@ export function ClientList() {
 
   const [clientDialog, setClientDialog] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
-  const [employeeDialog, setEmployeeDialog] = useState(false);
+  const [employeeDialog, _setEmployeeDialog] = useState(false);
+
+const setEmployeeDialog = (value: boolean) => {
+  console.log("employeeDialog ->", value);
+  _setEmployeeDialog(value);
+};
   const [employeeCompanyId, setEmployeeCompanyId] = useState<string | null>(null);
   const [editingEmployee, setEditingEmployee] = useState<ClientContact | null>(null);
   const [serviceDialog, setServiceDialog] = useState(false);
@@ -97,6 +103,16 @@ export function ClientList() {
     | null
   >(null);
   const [submitting, setSubmitting] = useState(false);
+  const [duplicateDialog, setDuplicateDialog] = useState({
+  open: false,
+  title: "",
+  message: "",
+  recordName: "",
+  identifiers: [] as {
+    label: string;
+    value: string;
+  }[],
+});
 
   const serviceNames = useMemo(
     () => Array.from(new Set(services.map((s) => s.name))),
@@ -279,50 +295,284 @@ export function ClientList() {
   }, [companyFilter, employees, employeesByCompany]);
 
   // ---- handlers ----
-  const handleClientSubmit = async (values: ClientFormValues) => {
-    if (!canManageCompanies) return;
-    setSubmitting(true);
-    try {
-      if (editingClient) {
-        await updateClient(editingClient.id, values);
-        await logAudit(staffId, username, "Company Edited", "company", editingClient.id);
-        toast.success("Company updated");
-      } else {
-        const c = await createClient(values);
-        await logAudit(staffId, username, "Company Created", "company", c.id);
-        toast.success("Company added");
-      }
-      setClientDialog(false);
-      setEditingClient(null);
-      reload();
-    } catch {
-      toast.error("Failed to save company");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const handleClientSubmit = async (
+  values: ClientFormValues,
+) => {
 
-  const handleEmployeeSubmit = async (values: EmployeeFormValues) => {
-    if (!canManageContacts) return;
-    setSubmitting(true);
-    try {
-      if (editingEmployee) {
-        await updateClientContact(editingEmployee.id, values);
-        toast.success("Client contact updated");
-      } else if (employeeCompanyId) {
-        await createClientContact(employeeCompanyId, values);
-        toast.success("Client contact added");
-      }
-      setEmployeeDialog(false);
-      setEditingEmployee(null);
-      setEmployeeCompanyId(null);
-      reload();
-    } catch {
-      toast.error("Failed to save client contact");
-    } finally {
+  if (!canManageCompanies) return;
+
+  setSubmitting(true);
+
+  try {
+
+    // Normalize GST
+    const gst = values.gst_number.trim().toUpperCase();
+
+    // Find duplicate
+    const existing = clients.find((c) => {
+
+      if (editingClient && c.id === editingClient.id)
+        return false;
+
+      return (
+        c.gst_number?.trim().toUpperCase() === gst
+      );
+
+    });
+
+    if (existing) {
+
+      setDuplicateDialog({
+  open: true,
+  title: "...",
+  message: "...",
+  recordName: "...",
+  identifiers: [
+    {
+      label: "...",
+      value: "...",
+    },
+  ],
+});
+
       setSubmitting(false);
+
+      return;
+
     }
-  };
+
+    if (editingClient) {
+
+      await updateClient(
+        editingClient.id,
+        values,
+      );
+
+      await logAudit(
+        staffId,
+        username,
+        "Company Edited",
+        "company",
+        editingClient.id,
+      );
+
+      toast.success("Company updated");
+
+    } else {
+
+      const c =
+        await createClient(values);
+
+      await logAudit(
+        staffId,
+        username,
+        "Company Created",
+        "company",
+        c.id,
+      );
+
+      toast.success("Company added");
+
+    }
+
+    setClientDialog(false);
+
+    setEditingClient(null);
+
+    reload();
+
+  } catch {
+
+    toast.error(
+      "Failed to save company",
+    );
+
+  } finally {
+
+    setSubmitting(false);
+
+  }
+
+};
+
+  const handleEmployeeSubmit = async (
+  values: EmployeeFormValues,
+) => {
+
+  if (!canManageContacts) return;
+
+  setSubmitting(true);
+
+  try {
+
+    const pan =
+      values.pan_number
+        ?.trim()
+        .toUpperCase();
+
+    const aadhaar =
+      values.aadhaar_number
+        ?.replace(/\s/g, "");
+
+  // -----------------------
+// Duplicate Check
+// -----------------------
+
+const existingPan = pan
+  ? employees.find((e) => {
+      if (editingEmployee && e.id === editingEmployee.id)
+        return false;
+
+      return (
+        e.pan_number?.trim().toUpperCase() === pan
+      );
+    })
+  : undefined;
+
+const existingAadhaar = aadhaar
+  ? employees.find((e) => {
+      if (editingEmployee && e.id === editingEmployee.id)
+        return false;
+
+      return (
+        e.aadhaar_number?.replace(/\s/g, "") === aadhaar
+      );
+    })
+  : undefined;
+
+if (existingPan || existingAadhaar) {
+
+  // ----------------------------
+  // PAN & Aadhaar belong to different clients
+  // ----------------------------
+
+  if (
+    existingPan &&
+    existingAadhaar &&
+    existingPan.id !== existingAadhaar.id
+  ) {
+    console.log("Duplicate dialog opening...");
+    setDuplicateDialog({
+      open: true,
+
+      title: "Duplicate Information Detected",
+
+      message:
+        "The PAN Number and Aadhaar Number belong to two different existing clients.",
+
+      recordName: `${existingPan.name} / ${existingAadhaar.name}`,
+
+      identifiers: [
+        {
+          label: `PAN Number (${existingPan.name})`,
+          value: existingPan.pan_number ?? "",
+        },
+        {
+          label: `Aadhaar Number (${existingAadhaar.name})`,
+          value: existingAadhaar.aadhaar_number ?? "",
+        },
+      ],
+    });
+
+    setSubmitting(false);
+    return;
+  }
+
+  // ----------------------------
+  // Same client
+  // ----------------------------
+
+  const existing = existingPan ?? existingAadhaar!;
+
+  const identifiers = [];
+
+  if (existingPan) {
+    identifiers.push({
+      label: "PAN Number",
+      value: existing.pan_number ?? "",
+    });
+  }
+
+  if (existingAadhaar) {
+    identifiers.push({
+      label: "Aadhaar Number",
+      value: existing.aadhaar_number ?? "",
+    });
+  }
+
+  let message = "";
+
+  if (existingPan && existingAadhaar) {
+    message =
+      "A client with the same PAN Number and Aadhaar Number already exists.";
+  } else if (existingPan) {
+    message =
+      "A client with the same PAN Number already exists.";
+  } else {
+    message =
+      "A client with the same Aadhaar Number already exists.";
+  }
+
+  setDuplicateDialog({
+    open: true,
+    title: "Client Already Exists",
+    message,
+    recordName: existing.name,
+    identifiers,
+  });
+
+  setSubmitting(false);
+  return;
+}
+    // -----------------------
+    // Save Contact
+    // -----------------------
+
+    if (editingEmployee) {
+
+      await updateClientContact(
+        editingEmployee.id,
+        values,
+      );
+
+      toast.success(
+        "Client contact updated",
+      );
+
+    } else if (employeeCompanyId) {
+
+      await createClientContact(
+        employeeCompanyId,
+        values,
+      );
+
+      toast.success(
+        "Client contact added",
+      );
+
+    }
+
+    setEmployeeDialog(false);
+
+    setEditingEmployee(null);
+
+    setEmployeeCompanyId(null);
+
+    reload();
+
+  } catch {
+
+    toast.error(
+      "Failed to save client contact",
+    );
+
+  } finally {
+
+    setSubmitting(false);
+
+  }
+
+};
 
   const handleServiceSubmit = async (values: ServiceFormValues) => {
     setSubmitting(true);
@@ -655,6 +905,19 @@ export function ClientList() {
         onConfirm={confirmDelete}
         loading={submitting}
       />
+      <DuplicateRecordDialog
+  open={duplicateDialog.open}
+  onOpenChange={(open) =>
+    setDuplicateDialog((prev) => ({
+      ...prev,
+      open,
+    }))
+  }
+  title={duplicateDialog.title}
+  message={duplicateDialog.message}
+  recordName={duplicateDialog.recordName}
+  identifiers={duplicateDialog.identifiers}
+/>
     </section>
   );
 }

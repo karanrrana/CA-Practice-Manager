@@ -44,10 +44,20 @@ export const clientContactSchema = z.object({
     .regex(/^[A-Z]{5}[0-9]{4}[A-Z]$/, "Invalid PAN (e.g. ABCDE1234F)")
     .or(z.literal("")),
   aadhaar_number: z
-    .string()
-    .trim()
-    .regex(/^[0-9]{12}$/, "Aadhaar must be 12 digits")
-    .or(z.literal("")),
+  .string()
+  .trim()
+  .refine(
+    (value) => {
+      if (value === "") return true;
+
+      const digits = value.replace(/\s/g, "");
+
+      return /^\d{12}$/.test(digits);
+    },
+    {
+      message: "Aadhaar must be 12 digits",
+    },
+  ),
   notes: z.string().trim().max(1000).or(z.literal("")),
 });
 // alias

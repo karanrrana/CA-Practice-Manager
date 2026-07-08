@@ -94,13 +94,45 @@ export function EmployeeForm({
           <div className="grid grid-cols-2 gap-3">
             <Field label="PAN Number" error={errors.pan_number?.message}>
               <Input
-                {...register("pan_number")}
-                placeholder="ABCDE1234F"
-                className="uppercase"
-              />
+  {...register("pan_number")}
+  className="uppercase"
+  onChange={(e) => {
+
+    e.target.value = e.target.value
+      .toUpperCase()
+      .replace(/\s/g, "");
+
+    register("pan_number").onChange(e);
+
+  }}
+/>
             </Field>
             <Field label="Aadhaar Number" error={errors.aadhaar_number?.message}>
-              <Input {...register("aadhaar_number")} placeholder="123412341234" />
+              <Input
+  {...register("aadhaar_number")}
+  maxLength={14}
+  onChange={(e) => {
+
+    let value = e.target.value
+      .replace(/\D/g, "")
+      .substring(0, 12);
+
+    value = value.replace(
+      /(\d{4})(\d{4})(\d{0,4})/,
+      (_, a, b, c) =>
+        c
+          ? `${a} ${b} ${c}`
+          : b
+          ? `${a} ${b}`
+          : a,
+    );
+
+    e.target.value = value;
+
+    register("aadhaar_number").onChange(e);
+
+  }}
+/>
             </Field>
           </div>
           <Field label="Internal ID" error={errors.employee_id?.message}>

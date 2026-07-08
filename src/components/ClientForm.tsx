@@ -98,10 +98,17 @@ export function ClientForm({
           </Field>
           <Field label="GST Number" error={errors.gst_number?.message}>
             <Input
-              {...register("gst_number")}
-              placeholder="22AAAAA0000A1Z5"
-              className="uppercase"
-            />
+  {...register("gst_number")}
+  placeholder="22AAAAA0000A1Z5"
+  className="uppercase"
+  onChange={(e) => {
+    e.target.value = e.target.value
+      .toUpperCase()
+      .replace(/\s/g, "");
+
+    register("gst_number").onChange(e);
+  }}
+/>
           </Field>
           <Field label="Address" error={errors.address?.message}>
             <Textarea {...register("address")} placeholder="Registered address" rows={2} />
