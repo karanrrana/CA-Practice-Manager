@@ -30,6 +30,7 @@ const SERVICE_CATEGORIES = {
     "Balance Sheet",
     "Income Tax Case",
     "ITR",
+    "TDS Return",
   ],
   GST: [
     "GST R1 / IFF",
