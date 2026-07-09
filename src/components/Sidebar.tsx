@@ -29,7 +29,7 @@ interface NavItem {
 
 const NAV: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/companies", label: "Companies", icon: Users },
+  { to: "/companies", label: "Groups", icon: Users },
   { to: "/staff", label: "Staff Members", icon: UsersRound, roles: ["Admin"] },
   {
   to: "/my-tasks",

@@ -87,7 +87,7 @@ export function ClientForm({
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl rounded-2xl p-8 shadow-2xl border">
         <DialogHeader className="border-b pb-5">
   <DialogTitle className="text-2xl font-bold">
-    {client ? "Edit Company" : "Add Company"}
+    {client ? "Edit Group" : "Add Group"}
   </DialogTitle>
 
   <p className="text-sm text-muted-foreground">
@@ -101,7 +101,7 @@ export function ClientForm({
   noValidate
 >
 
-  <Field label="Company Name" error={errors.name?.message}>
+  <Field label="Group Name" error={errors.name?.message}>
     <Input
       {...register("name")}
       placeholder="Acme Pvt Ltd"
@@ -344,7 +344,7 @@ export function ClientForm({
     >
       {client
         ? "Save Changes"
-        : "Add Company"}
+        : "Add Group"}
     </Button>
 
   </DialogFooter>

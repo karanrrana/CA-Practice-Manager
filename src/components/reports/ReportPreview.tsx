@@ -28,7 +28,7 @@ export function ReportPreview({
 
           <tr className="border-b">
 
-            <th className="p-2 text-left">Company</th>
+            <th className="p-2 text-left">Group</th>
 
             <th className="p-2 text-left">Contact</th>
 

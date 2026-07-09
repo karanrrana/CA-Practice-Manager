@@ -9,7 +9,7 @@ export const Route = createFileRoute("/companies")({
 
 function CompaniesPage() {
   return (
-    <AppLayout title="Companies" subtitle="Manage companies, client contacts & services">
+    <AppLayout title="Groups" subtitle="Manage companies, client contacts & services">
       <ClientList />
     </AppLayout>
   );

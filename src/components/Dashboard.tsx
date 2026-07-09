@@ -178,7 +178,7 @@ export function Dashboard({
   const inactiveStaff = staff.length - activeStaff;
 
   const cards = [
-    { label: "Total Companies", value: clients.length, icon: Building2, accent: "bg-primary/10 text-primary" },
+    { label: "Total Groups", value: clients.length, icon: Building2, accent: "bg-primary/10 text-primary" },
     { label: "Client Contacts", value: employees.length, icon: Users, accent: "bg-primary/10 text-primary" },
     ...(role === "Admin"
       ? [
@@ -270,9 +270,9 @@ export function Dashboard({
 }}
     className="group rounded-2xl border bg-blue-50 p-5 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       <div className="text-3xl">🏢</div>
-      <h3 className="mt-4 font-semibold">Add Company</h3>
+      <h3 className="mt-4 font-semibold">Add Group</h3>
       <p className="mt-1 text-sm text-slate-500">
-        Register a new company
+        Register a new group
       </p>
       
     </button>
@@ -373,12 +373,12 @@ className="group rounded-2xl border bg-green-50 p-5 text-left transition-all dur
 
               <div className="rounded-2xl border bg-white p-6 shadow-lg transition-all hover:shadow-xl">
             <h3 className="mb-5 text-xl font-bold text-slate-900">
-              Recently Added Companies
+              Recently Added Groups
             </h3>
 
             {recentCompanies.length === 0 ? (
               <p className="text-sm text-muted-foreground">
-                No companies yet.
+                No groups yet.
               </p>
             ) : (
               <ul className="space-y-3">
@@ -398,7 +398,7 @@ className="group rounded-2xl border bg-green-50 p-5 text-left transition-all dur
                     </div>
 
                     <div className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
-                      Company
+                      Group
                     </div>
                   </li>
                 ))}

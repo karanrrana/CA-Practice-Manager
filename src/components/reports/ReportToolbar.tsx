@@ -19,7 +19,7 @@ export function ReportToolbar({
       <div className="flex flex-wrap gap-3">
 
         {[
-          "Company",
+          "Group",
           "Status",
           "Service",
         ].map((type) => (

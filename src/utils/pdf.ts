@@ -129,7 +129,7 @@ export function exportServicesCsv(
   }[],
 ) {
   const header = [
-  "Company",
+  "Group",
   "Client Contact",
   "Service",
   "Assigned Staff",

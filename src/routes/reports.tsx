@@ -28,7 +28,7 @@ function ReportsPage() {
   const { clients, employees, services, staff } = useAppData();
   const { username } = useAuth();
   const [reportType, setReportType] =
-  useState("Company");
+  useState("Group");
 
 const [filter, setFilter] =
   useState("");
@@ -68,7 +68,7 @@ const [companyId, setCompanyId] =
         : undefined;
 
       if (
-        reportType === "Company"
+        reportType === "Group"
       ) {
 
         if (
@@ -182,7 +182,7 @@ const [companyId, setCompanyId] =
 
       <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
 
-        {reportType === "Company" ? (
+        {reportType === "Group" ? (
 
           <div className="space-y-2">
 
@@ -195,13 +195,13 @@ const [companyId, setCompanyId] =
               onValueChange={setCompanyId}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select Company" />
+                <SelectValue placeholder="Select Group" />
               </SelectTrigger>
 
               <SelectContent>
 
                 <SelectItem value="all">
-                  All Companies
+                  All groups
                 </SelectItem>
 
                 {clients.map((company) => (

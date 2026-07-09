@@ -95,7 +95,7 @@ export function MyAssignedTasks({
 
   <p className="mt-2 flex items-center gap-2 text-sm text-slate-600">
     <Building2 className="h-4 w-4 text-indigo-600" />
-    <span>{company?.name ?? "Unknown Company"}</span>
+    <span>{company?.name ?? "Unknown Group"}</span>
   </p>
 
   <p className="mt-1 flex items-center gap-2 text-sm text-slate-600">

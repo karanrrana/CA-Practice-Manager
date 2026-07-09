@@ -64,7 +64,7 @@ function DocumentsPage() {
         staffId,
         staffName: username,
       });
-      await logAudit(staffId, username, "Document Uploaded", "company", companyId, {
+      await logAudit(staffId, username, "Document Uploaded", "Group", companyId, {
         file: file.name,
       });
       toast.success("Document uploaded");
@@ -90,7 +90,7 @@ function DocumentsPage() {
             <label className="text-xs font-medium text-muted-foreground">Company</label>
             <Select value={companyId} onValueChange={setCompanyId}>
               <SelectTrigger className="w-56">
-                <SelectValue placeholder="Select company" />
+                <SelectValue placeholder="Select Group" />
               </SelectTrigger>
               <SelectContent>
                 {clients.map((c) => (

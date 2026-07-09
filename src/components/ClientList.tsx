@@ -434,23 +434,23 @@ const setEmployeeDialog = (value: boolean) => {
       ) {
 
         message =
-          "A company with the same GST Number and PAN Number already exists.";
+          "A group with the same GST Number and PAN Number already exists.";
 
       } else if (existingGst) {
 
         message =
-          "A company with the same GST Number already exists.";
+          "A group with the same GST Number already exists.";
 
       } else {
 
         message =
-          "A company with the same PAN Number already exists.";
+          "A group with the same PAN Number already exists.";
 
       }
 
       setDuplicateDialog({
         open: true,
-        title: "Company Already Exists",
+        title: "Group Already Exists",
         message,
         recordName: existing.name,
         identifiers,
@@ -476,12 +476,12 @@ const setEmployeeDialog = (value: boolean) => {
         staffId,
         username,
         "Company Edited",
-        "company",
+        "Group",
         editingClient.id,
       );
 
       toast.success(
-        "Company updated",
+        "Group Updated",
       );
 
     } else {
@@ -492,13 +492,13 @@ const setEmployeeDialog = (value: boolean) => {
       await logAudit(
         staffId,
         username,
-        "Company Created",
-        "company",
+        "Group Created",
+        "Group",
         c.id,
       );
 
       toast.success(
-        "Company added",
+        "Group added",
       );
 
     }
@@ -512,7 +512,7 @@ const setEmployeeDialog = (value: boolean) => {
   } catch {
 
     toast.error(
-      "Failed to save company",
+      "Failed to save group",
     );
 
   } finally {
@@ -759,8 +759,8 @@ if (existingPan || existingAadhaar) {
     try {
       if (deleteTarget.type === "client") {
         await deleteClient(deleteTarget.item.id);
-        await logAudit(staffId, username, "Company Deleted", "company", deleteTarget.item.id);
-        toast.success("Company deleted");
+        await logAudit(staffId, username, "Group Deleted", "Group", deleteTarget.item.id);
+        toast.success("Group Deleted");
       } else if (deleteTarget.type === "employee") {
         await deleteClientContact(deleteTarget.item.id);
         toast.success("Client contact deleted");
@@ -801,7 +801,7 @@ if (existingPan || existingAadhaar) {
   return (
     <section className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-lg font-bold text-foreground">Companies</h2>
+        <h2 className="text-lg font-bold text-foreground">Groups</h2>
         {canManageCompanies && (
           <Button
             onClick={() => {
@@ -809,7 +809,7 @@ if (existingPan || existingAadhaar) {
               setClientDialog(true);
             }}
           >
-            <Plus className="mr-1 h-4 w-4" /> Add Company
+            <Plus className="mr-1 h-4 w-4" /> Add Group
           </Button>
         )}
       </div>
@@ -821,7 +821,7 @@ if (existingPan || existingAadhaar) {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search companies, contacts (name/email/phone/PAN/Aadhaar), services, tags…"
+            placeholder="Search groups, contacts (name/email/phone/PAN/Aadhaar), services, tags…"
             className="pl-9"
           />
         </div>
@@ -838,9 +838,9 @@ if (existingPan || existingAadhaar) {
           </Select>
 
           <Select value={companyFilter} onValueChange={setCompanyFilter}>
-            <SelectTrigger><SelectValue placeholder="Company" /></SelectTrigger>
+            <SelectTrigger><SelectValue placeholder="Group" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All companies</SelectItem>
+              <SelectItem value="all">All groups</SelectItem>
               {clients.map((c) => (
                 <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
               ))}
@@ -908,10 +908,10 @@ if (existingPan || existingAadhaar) {
           <Select value={clientSort} onValueChange={setClientSort}>
             <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="recent">Companies: Newest</SelectItem>
-              <SelectItem value="oldest">Companies: Oldest</SelectItem>
-              <SelectItem value="az">Companies: A–Z</SelectItem>
-              <SelectItem value="za">Companies: Z–A</SelectItem>
+              <SelectItem value="recent">Groups: Newest</SelectItem>
+              <SelectItem value="oldest">Groups: Oldest</SelectItem>
+              <SelectItem value="az">Groups: A–Z</SelectItem>
+              <SelectItem value="za">Groups: Z–A</SelectItem>
             </SelectContent>
           </Select>
           {activeFilterCount > 0 && (
@@ -928,7 +928,7 @@ if (existingPan || existingAadhaar) {
       ) : paged.length === 0 ? (
         <EmptyState
           icon={Users}
-          title="No companies found"
+          title="No groups found"
           description="Try adjusting your search or filters."
         />
       ) : (

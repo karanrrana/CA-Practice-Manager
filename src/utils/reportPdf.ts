@@ -74,7 +74,7 @@ export function generateReportPdf(
     startY: 64,
 
     head: [[
-      "Company",
+      "Group",
       "Client",
       "Service",
       "Assigned",
