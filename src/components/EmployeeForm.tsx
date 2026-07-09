@@ -67,107 +67,190 @@ export function EmployeeForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>
-            {employee ? "Edit Client Contact" : "Add Client Contact"}
-          </DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-          <Field label="Full Name" error={errors.name?.message}>
-            <Input {...register("name")} placeholder="Rahul Sharma" />
-          </Field>
-          <Field label="Email" error={errors.email?.message}>
-            <Input {...register("email")} placeholder="rahul@acme.com" />
-          </Field>
-          <Field label="Phone" error={errors.phone?.message}>
-            <Input {...register("phone")} placeholder="9876543210" />
-          </Field>
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Designation" error={errors.designation?.message}>
-              <Input {...register("designation")} placeholder="Director" />
-            </Field>
-            <Field label="Department" error={errors.department?.message}>
-              <Input {...register("department")} placeholder="Finance" />
-            </Field>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="PAN Number" error={errors.pan_number?.message}>
-              <Input
-  {...register("pan_number")}
-  className="uppercase"
-  onChange={(e) => {
+  <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl rounded-2xl border shadow-2xl p-8">
 
-    e.target.value = e.target.value
-      .toUpperCase()
-      .replace(/\s/g, "");
+    <DialogHeader className="border-b pb-5">
 
-    register("pan_number").onChange(e);
+      <DialogTitle className="text-2xl font-bold">
+        {employee ? "Edit Client Contact" : "Add Client Contact"}
+      </DialogTitle>
 
-  }}
-/>
-            </Field>
-            <Field label="Aadhaar Number" error={errors.aadhaar_number?.message}>
-              <Input
-  {...register("aadhaar_number")}
-  maxLength={14}
-  onChange={(e) => {
+      <p className="text-sm text-muted-foreground">
+        Manage client contact information and identification details.
+      </p>
 
-    let value = e.target.value
-      .replace(/\D/g, "")
-      .substring(0, 12);
+    </DialogHeader>
 
-    value = value.replace(
-      /(\d{4})(\d{4})(\d{0,4})/,
-      (_, a, b, c) =>
-        c
-          ? `${a} ${b} ${c}`
-          : b
-          ? `${a} ${b}`
-          : a,
-    );
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-6 pt-6"
+      noValidate
+    >
 
-    e.target.value = value;
+      {/* Full Name */}
 
-    register("aadhaar_number").onChange(e);
+      <Field label="Full Name" error={errors.name?.message}>
+        <Input
+          {...register("name")}
+          placeholder="Rahul Sharma"
+          className="h-11 rounded-xl"
+        />
+      </Field>
 
-  }}
-/>
-            </Field>
-          </div>
-          <Field label="Internal ID" error={errors.employee_id?.message}>
-            <Input {...register("employee_id")} placeholder="EMP-001" />
-          </Field>
-          <Field label="Notes" error={errors.notes?.message}>
-            <Controller
-              control={control}
-              name="notes"
-              render={({ field }) => (
-                <Textarea
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Any additional notes…"
-                  rows={3}
-                />
-              )}
+      {/* Email + Phone */}
+
+      <div className="grid grid-cols-2 gap-5">
+
+        <Field label="Email" error={errors.email?.message}>
+          <Input
+            {...register("email")}
+            placeholder="rahul@acme.com"
+            className="h-11 rounded-xl"
+          />
+        </Field>
+
+        <Field label="Phone" error={errors.phone?.message}>
+          <Input
+            {...register("phone")}
+            placeholder="9876543210"
+            className="h-11 rounded-xl"
+          />
+        </Field>
+
+      </div>
+
+      {/* Designation + Department */}
+
+      <div className="grid grid-cols-2 gap-5">
+
+        <Field label="Designation" error={errors.designation?.message}>
+          <Input
+            {...register("designation")}
+            placeholder="Director"
+            className="h-11 rounded-xl"
+          />
+        </Field>
+
+        <Field label="Department" error={errors.department?.message}>
+          <Input
+            {...register("department")}
+            placeholder="Finance"
+            className="h-11 rounded-xl"
+          />
+        </Field>
+
+      </div>
+
+      {/* PAN + Aadhaar */}
+
+      <div className="grid grid-cols-2 gap-5">
+
+        <Field label="PAN Number" error={errors.pan_number?.message}>
+          <Input
+            {...register("pan_number")}
+            placeholder="ABCDE1234F"
+            className="uppercase h-11 rounded-xl"
+            onChange={(e) => {
+
+              e.target.value = e.target.value
+                .toUpperCase()
+                .replace(/\s/g, "");
+
+              register("pan_number").onChange(e);
+
+            }}
+          />
+        </Field>
+
+        <Field
+          label="Aadhaar Number"
+          error={errors.aadhaar_number?.message}
+        >
+          <Input
+            {...register("aadhaar_number")}
+            placeholder="1234 5678 9012"
+            maxLength={14}
+            className="h-11 rounded-xl"
+            onChange={(e) => {
+
+              let value = e.target.value
+                .replace(/\D/g, "")
+                .substring(0, 12);
+
+              value = value.replace(
+                /(\d{4})(\d{4})(\d{0,4})/,
+                (_, a, b, c) =>
+                  c
+                    ? `${a} ${b} ${c}`
+                    : b
+                    ? `${a} ${b}`
+                    : a,
+              );
+
+              e.target.value = value;
+
+              register("aadhaar_number").onChange(e);
+
+            }}
+          />
+        </Field>
+
+      </div>
+
+      {/* Internal ID */}
+
+      <Field label="Internal ID" error={errors.employee_id?.message}>
+        <Input
+          {...register("employee_id")}
+          placeholder="EMP-001"
+          className="h-11 rounded-xl"
+        />
+      </Field>
+
+      {/* Notes */}
+
+      <Field label="Notes" error={errors.notes?.message}>
+        <Controller
+          control={control}
+          name="notes"
+          render={({ field }) => (
+            <Textarea
+              value={field.value}
+              onChange={field.onChange}
+              placeholder="Any additional notes..."
+              rows={4}
+              className="rounded-xl"
             />
-          </Field>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={submitting}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={submitting}>
-              {employee ? "Save Changes" : "Add Client Contact"}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+          )}
+        />
+      </Field>
+
+      <DialogFooter className="border-t pt-6 mt-8">
+
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => onOpenChange(false)}
+          disabled={submitting}
+          className="rounded-xl"
+        >
+          Cancel
+        </Button>
+
+        <Button
+          type="submit"
+          disabled={submitting}
+          className="rounded-xl px-6"
+        >
+          {employee ? "Save Changes" : "Add Client Contact"}
+        </Button>
+
+      </DialogFooter>
+
+    </form>
+
+  </DialogContent>
+</Dialog>
   );
 }
 

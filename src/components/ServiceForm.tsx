@@ -140,20 +140,44 @@ recurring_status:
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md"
-      onInteractOutside={(e) => e.preventDefault()}>
-        <DialogHeader>
-          <DialogTitle>{service ? "Edit Service" : "Add Service"}</DialogTitle>
-        </DialogHeader>
+  <DialogContent
+    className="max-h-[90vh] overflow-y-auto sm:max-w-3xl rounded-2xl border shadow-2xl p-8"
+    onInteractOutside={(e) => e.preventDefault()}
+  >
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-4"
-          noValidate
-        >
+    <DialogHeader className="border-b pb-5">
+
+      <DialogTitle className="text-2xl font-bold">
+        {service ? "Edit Service" : "Add Service"}
+      </DialogTitle>
+
+      <p className="text-sm text-muted-foreground">
+        Configure service details, assign staff members and automate recurring
+        services.
+      </p>
+
+    </DialogHeader>
+
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-6 pt-6"
+      noValidate
+    >
+
+      {/* Service Details */}
+
+      <div className="space-y-5">
+
+        <h3 className="font-semibold text-base">
+          Service Details
+        </h3>
+
+        <div className="grid grid-cols-2 gap-5">
+
           {/* CATEGORY */}
 
-          <div className="space-y-1.5">
+          <div className="space-y-2">
+
             <Label>Service Category</Label>
 
             <Select
@@ -163,287 +187,432 @@ recurring_status:
                 setValue("name", "");
               }}
             >
-              <SelectTrigger>
+
+              <SelectTrigger className="h-11 rounded-xl">
+
                 <SelectValue placeholder="Select Category" />
+
               </SelectTrigger>
 
               <SelectContent>
+
                 {Object.keys(SERVICE_CATEGORIES).map((category) => (
-                  <SelectItem key={category} value={category}>
+
+                  <SelectItem
+                    key={category}
+                    value={category}
+                  >
+
                     {category}
+
                   </SelectItem>
+
                 ))}
+
               </SelectContent>
+
             </Select>
+
           </div>
 
           {/* SERVICE */}
 
-          <div className="space-y-1.5">
+          <div className="space-y-2">
+
             <Label>Service</Label>
 
             <Controller
               control={control}
               name="name"
               render={({ field }) => (
+
                 <Select
                   value={field.value}
                   onValueChange={field.onChange}
                   disabled={!selectedCategory}
                 >
-                  <SelectTrigger>
+
+                  <SelectTrigger className="h-11 rounded-xl">
+
                     <SelectValue placeholder="Select Service" />
+
                   </SelectTrigger>
 
                   <SelectContent>
+
                     {(
                       SERVICE_CATEGORIES[
                         selectedCategory as keyof typeof SERVICE_CATEGORIES
                       ] ?? []
                     ).map((serviceName) => (
+
                       <SelectItem
                         key={serviceName}
                         value={serviceName}
                       >
+
                         {serviceName}
+
                       </SelectItem>
+
                     ))}
+
                   </SelectContent>
+
                 </Select>
+
               )}
             />
 
             {errors.name && (
+
               <p className="text-xs text-destructive">
+
                 {errors.name.message}
+
               </p>
+
             )}
+
           </div>
+
+        </div>
+
+        <div className="grid grid-cols-2 gap-5">
 
           {/* STATUS */}
 
-          <div className="space-y-1.5">
+          <div className="space-y-2">
+
             <Label>Status</Label>
 
             <Controller
               control={control}
               name="status"
               render={({ field }) => (
+
                 <Select
                   value={field.value}
                   onValueChange={field.onChange}
                 >
-                  <SelectTrigger>
+
+                  <SelectTrigger className="h-11 rounded-xl">
+
                     <SelectValue />
+
                   </SelectTrigger>
 
                   <SelectContent>
+
                     {STATUS_VALUES.map((s) => (
-                      <SelectItem key={s} value={s}>
+
+                      <SelectItem
+                        key={s}
+                        value={s}
+                      >
+
                         {s}
+
                       </SelectItem>
+
                     ))}
+
                   </SelectContent>
+
                 </Select>
+
               )}
             />
+
           </div>
 
-          {/* ASSIGNED STAFF */}
+          {/* DUE DATE */}
 
-          <div className="space-y-1.5">
+          <div className="space-y-2">
+
+            <Label>Due Date</Label>
+
+            <Input
+              type="date"
+              {...register("due_date")}
+              className="h-11 rounded-xl"
+            />
+
+            {errors.due_date && (
+
+              <p className="text-xs text-destructive">
+
+                {errors.due_date.message}
+
+              </p>
+
+            )}
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Staff Assignment */}
+
+      <div className="space-y-5">
+
+        <h3 className="font-semibold text-base">
+          Staff Assignment
+        </h3>
+
+        <div className="grid grid-cols-2 gap-5">
+
+          {/* Assigned Staff */}
+
+          <div className="space-y-2">
+
             <Label>Assigned Staff</Label>
 
             <Controller
               control={control}
               name="assigned_staff_id"
               render={({ field }) => (
+
                 <Select
                   value={field.value || UNASSIGNED}
                   onValueChange={(v) =>
                     field.onChange(v === UNASSIGNED ? "" : v)
                   }
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select staff" />
+
+                  <SelectTrigger className="h-11 rounded-xl">
+
+                    <SelectValue placeholder="Select Staff" />
+
                   </SelectTrigger>
 
                   <SelectContent>
+
                     <SelectItem value={UNASSIGNED}>
+
                       Unassigned
+
                     </SelectItem>
 
                     {activeStaff.map((s) => (
-                      <SelectItem key={s.id} value={s.id}>
+
+                      <SelectItem
+                        key={s.id}
+                        value={s.id}
+                      >
+
                         {s.full_name} · {s.role}
+
                       </SelectItem>
+
                     ))}
+
                   </SelectContent>
+
                 </Select>
+
               )}
             />
+
           </div>
 
-          {/* SUPPORTING STAFF */}
+          {/* Supporting Staff */}
 
-          <div className="space-y-1.5">
-            <Label>Supporting Staff (optional)</Label>
+          <div className="space-y-2">
+
+            <Label>Supporting Staff</Label>
 
             <Controller
               control={control}
               name="supporting_staff_id"
               render={({ field }) => (
+
                 <Select
                   value={field.value || UNASSIGNED}
                   onValueChange={(v) =>
                     field.onChange(v === UNASSIGNED ? "" : v)
                   }
                 >
-                  <SelectTrigger>
+
+                  <SelectTrigger className="h-11 rounded-xl">
+
                     <SelectValue placeholder="None" />
+
                   </SelectTrigger>
 
                   <SelectContent>
+
                     <SelectItem value={UNASSIGNED}>
+
                       None
+
                     </SelectItem>
 
                     {activeStaff.map((s) => (
-                      <SelectItem key={s.id} value={s.id}>
+
+                      <SelectItem
+                        key={s.id}
+                        value={s.id}
+                      >
+
                         {s.full_name} · {s.role}
+
                       </SelectItem>
+
                     ))}
+
                   </SelectContent>
+
                 </Select>
+
               )}
             />
+
           </div>
-
-          {/* DUE DATE */}
-
-          <div className="space-y-1.5">
-            <Label>Due Date</Label>
-
-            <Input type="date" {...register("due_date")} />
-
-            {errors.due_date && (
-              <p className="text-xs text-destructive">
-                {errors.due_date.message}
-              </p>
-            )}
-          </div>
-            {/* RECURRING SERVICE */}
-
-<div className="rounded-xl border bg-slate-50 p-4 space-y-4">
-
-  <div className="flex items-center justify-between">
-
-    <div>
-      <Label className="text-base">
-        Recurring Service
-      </Label>
-
-      <p className="text-xs text-muted-foreground">
-        Automatically create the next service after completion.
-      </p>
-    </div>
-
-    <Controller
-      control={control}
-      name="is_recurring"
-      render={({ field }) => (
-        <Switch
-          checked={field.value}
-          onCheckedChange={field.onChange}
-        />
-      )}
-    />
-
-  </div>
-
-  {watch("is_recurring") && (
-
-    <Controller
-      control={control}
-      name="recurrence"
-      render={({ field }) => (
-
-        <div className="space-y-2">
-
-          <Label>Frequency</Label>
-
-          <Select
-            value={field.value}
-            onValueChange={(value) => {
-  field.onChange(value);
-
-  const months =
-    value === "Monthly"
-      ? 1
-      : value === "Quarterly"
-      ? 3
-      : value === "Half-Yearly"
-      ? 6
-      : value === "Yearly"
-      ? 12
-      : 0;
-
-  setValue("recurrence_interval", months);
-}}
-          >
-
-            <SelectTrigger>
-
-              <SelectValue />
-
-            </SelectTrigger>
-
-            <SelectContent>
-
-              <SelectItem value="Monthly">
-                Monthly
-              </SelectItem>
-
-              <SelectItem value="Quarterly">
-                Quarterly
-              </SelectItem>
-              
-              <SelectItem value="Half-Yearly">
-                Half-Yearly
-              </SelectItem>
-
-              <SelectItem value="Yearly">
-                Yearly
-              </SelectItem>
-
-            </SelectContent>
-
-          </Select>
 
         </div>
 
-      )}
-    />
+      </div>
+                 {/* Automation */}
 
-  )}
+      <div className="space-y-5">
 
-</div>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={submitting}
-            >
-              Cancel
-            </Button>
+        <h3 className="font-semibold text-base">
+          Automation
+        </h3>
 
-            <Button type="submit" disabled={submitting}>
-              {service ? "Save Changes" : "Add Service"}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+        <div className="rounded-2xl border bg-muted/30 p-6 space-y-6">
+
+          <div className="flex items-center justify-between">
+
+            <div>
+
+              <Label className="text-base font-semibold">
+                Recurring Service
+              </Label>
+
+              <p className="text-sm text-muted-foreground mt-1">
+                Automatically generate the next service after this one is completed.
+              </p>
+
+            </div>
+
+            <Controller
+              control={control}
+              name="is_recurring"
+              render={({ field }) => (
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              )}
+            />
+
+          </div>
+
+          {watch("is_recurring") && (
+
+            <Controller
+              control={control}
+              name="recurrence"
+              render={({ field }) => (
+
+                <div className="space-y-2">
+
+                  <Label>Recurring Frequency</Label>
+
+                  <Select
+                    value={field.value}
+                    onValueChange={(value) => {
+
+                      field.onChange(value);
+
+                      const months =
+                        value === "Monthly"
+                          ? 1
+                          : value === "Quarterly"
+                          ? 3
+                          : value === "Half-Yearly"
+                          ? 6
+                          : value === "Yearly"
+                          ? 12
+                          : 0;
+
+                      setValue(
+                        "recurrence_interval",
+                        months,
+                      );
+
+                    }}
+                  >
+
+                    <SelectTrigger className="h-11 rounded-xl">
+
+                      <SelectValue />
+
+                    </SelectTrigger>
+
+                    <SelectContent>
+
+                      <SelectItem value="Monthly">
+                        Monthly
+                      </SelectItem>
+
+                      <SelectItem value="Quarterly">
+                        Quarterly
+                      </SelectItem>
+
+                      <SelectItem value="Half-Yearly">
+                        Half-Yearly
+                      </SelectItem>
+
+                      <SelectItem value="Yearly">
+                        Yearly
+                      </SelectItem>
+
+                    </SelectContent>
+
+                  </Select>
+
+                </div>
+
+              )}
+            />
+
+          )}
+
+        </div>
+
+      </div>
+
+      <DialogFooter className="border-t pt-6 mt-8">
+
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => onOpenChange(false)}
+          disabled={submitting}
+          className="rounded-xl"
+        >
+          Cancel
+        </Button>
+
+        <Button
+          type="submit"
+          disabled={submitting}
+          className="rounded-xl px-6"
+        >
+          {service ? "Save Changes" : "Add Service"}
+        </Button>
+
+      </DialogFooter>
+
+    </form>
+
+  </DialogContent>
+
+</Dialog>
   );
 }
