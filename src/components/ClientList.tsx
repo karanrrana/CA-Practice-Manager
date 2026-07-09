@@ -305,41 +305,165 @@ const setEmployeeDialog = (value: boolean) => {
 
   try {
 
-    // Normalize GST
-    const gst = values.gst_number.trim().toUpperCase();
+    // -----------------------
+    // Normalize Identifiers
+    // -----------------------
 
-    // Find duplicate
-    const existing = clients.find((c) => {
+    const gst =
+      values.gst_number
+        ?.trim()
+        .toUpperCase();
 
-      if (editingClient && c.id === editingClient.id)
-        return false;
+    const pan =
+      values.pan_number
+        ?.trim()
+        .toUpperCase();
 
-      return (
-        c.gst_number?.trim().toUpperCase() === gst
-      );
+    // -----------------------
+    // Duplicate Check
+    // -----------------------
 
-    });
+    const existingGst = gst
+      ? clients.find((c) => {
 
-    if (existing) {
+          if (
+            editingClient &&
+            c.id === editingClient.id
+          )
+            return false;
+
+          return (
+            c.gst_number
+              ?.trim()
+              .toUpperCase() === gst
+          );
+
+        })
+      : undefined;
+
+    const existingPan = pan
+      ? clients.find((c) => {
+
+          if (
+            editingClient &&
+            c.id === editingClient.id
+          )
+            return false;
+
+          return (
+            c.pan_number
+              ?.trim()
+              .toUpperCase() === pan
+          );
+
+        })
+      : undefined;
+
+    if (existingGst || existingPan) {
+
+      // ------------------------------------
+      // GST & PAN belong to different companies
+      // ------------------------------------
+
+      if (
+        existingGst &&
+        existingPan &&
+        existingGst.id !== existingPan.id
+      ) {
+
+        setDuplicateDialog({
+          open: true,
+
+          title: "Duplicate Information Detected",
+
+          message:
+            "The GST Number and PAN Number belong to two different existing companies.",
+
+          recordName:
+            `${existingGst.name} / ${existingPan.name}`,
+
+          identifiers: [
+            {
+              label: `GST Number (${existingGst.name})`,
+              value:
+                existingGst.gst_number ?? "",
+            },
+            {
+              label: `PAN Number (${existingPan.name})`,
+              value:
+                existingPan.pan_number ?? "",
+            },
+          ],
+        });
+
+        setSubmitting(false);
+
+        return;
+      }
+
+      // ------------------------------------
+      // Same Company
+      // ------------------------------------
+
+      const existing =
+        existingGst ?? existingPan!;
+
+      const identifiers = [];
+
+      if (existingGst) {
+        identifiers.push({
+          label: "GST Number",
+          value:
+            existing.gst_number ?? "",
+        });
+      }
+
+      if (existingPan) {
+        identifiers.push({
+          label: "PAN Number",
+          value:
+            existing.pan_number ?? "",
+        });
+      }
+
+      let message = "";
+
+      if (
+        existingGst &&
+        existingPan
+      ) {
+
+        message =
+          "A company with the same GST Number and PAN Number already exists.";
+
+      } else if (existingGst) {
+
+        message =
+          "A company with the same GST Number already exists.";
+
+      } else {
+
+        message =
+          "A company with the same PAN Number already exists.";
+
+      }
 
       setDuplicateDialog({
-  open: true,
-  title: "...",
-  message: "...",
-  recordName: "...",
-  identifiers: [
-    {
-      label: "...",
-      value: "...",
-    },
-  ],
-});
+        open: true,
+        title: "Company Already Exists",
+        message,
+        recordName: existing.name,
+        identifiers,
+      });
 
       setSubmitting(false);
 
       return;
-
     }
+
+    // -----------------------
+    // Save Company
+    // -----------------------
 
     if (editingClient) {
 
@@ -356,7 +480,9 @@ const setEmployeeDialog = (value: boolean) => {
         editingClient.id,
       );
 
-      toast.success("Company updated");
+      toast.success(
+        "Company updated",
+      );
 
     } else {
 
@@ -371,7 +497,9 @@ const setEmployeeDialog = (value: boolean) => {
         c.id,
       );
 
-      toast.success("Company added");
+      toast.success(
+        "Company added",
+      );
 
     }
 

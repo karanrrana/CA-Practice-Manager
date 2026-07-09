@@ -21,6 +21,7 @@ export interface Client {
   email: string | null;
   phone: string | null;
   gst_number: string | null;
+  pan_number: string | null;
   address: string | null;
   status: CompanyStatus;
   tags: string[];
@@ -147,7 +148,10 @@ export interface ClientInput {
   name: string;
   email: string;
   phone: string;
+
   gst_number: string;
+  pan_number: string;
+
   address: string;
   status: CompanyStatus;
   tags: string[];

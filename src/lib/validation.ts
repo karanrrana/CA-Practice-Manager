@@ -20,8 +20,17 @@ export const clientSchema = z.object({
     .regex(
       /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
       "Invalid GST number (e.g. 22AAAAA0000A1Z5)",
+    
     )
     .or(z.literal("")),
+    pan_number: z
+  .string()
+  .trim()
+  .regex(
+    /^[A-Z]{5}[0-9]{4}[A-Z]$/,
+    "Invalid PAN (e.g. ABCDE1234F)"
+  )
+  .or(z.literal("")),
   address: z.string().trim().max(400).or(z.literal("")),
   status: z.enum(["Active", "Inactive", "Archived"]),
   tags: z.array(z.string()),

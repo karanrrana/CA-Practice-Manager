@@ -59,6 +59,7 @@ export function ClientForm({
       email: "",
       phone: "",
       gst_number: "",
+      pan_number: "",
       address: "",
       status: "Active",
       tags: [],
@@ -73,6 +74,7 @@ export function ClientForm({
         email: client?.email ?? "",
         phone: client?.phone ?? "",
         gst_number: client?.gst_number ?? "",
+        pan_number: client?.pan_number ?? "",
         address: client?.address ?? "",
         status: client?.status ?? "Active",
         tags: client?.tags ?? [],
@@ -110,6 +112,20 @@ export function ClientForm({
   }}
 />
           </Field>
+          <Field label="PAN Number" error={errors.pan_number?.message}>
+  <Input
+    {...register("pan_number")}
+    placeholder="ABCDE1234F"
+    className="uppercase"
+    onChange={(e) => {
+      e.target.value = e.target.value
+        .toUpperCase()
+        .replace(/\s/g, "");
+
+      register("pan_number").onChange(e);
+    }}
+  />
+</Field>
           <Field label="Address" error={errors.address?.message}>
             <Textarea {...register("address")} placeholder="Registered address" rows={2} />
           </Field>

@@ -117,6 +117,7 @@ export type Database = {
           created_at: string
           email: string | null
           gst_number: string | null
+          pan_number: string | null
           id: string
           name: string
           phone: string | null
@@ -129,6 +130,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           gst_number?: string | null
+          pan_number?: string | null
           id?: string
           name: string
           phone?: string | null
@@ -141,6 +143,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           gst_number?: string | null
+          pan_number?: string | null
           id?: string
           name?: string
           phone?: string | null

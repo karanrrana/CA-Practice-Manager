@@ -129,11 +129,19 @@ export function ClientRow({
                 </span>
               )}
               {client.gst_number && (
-                <span className="inline-flex items-center gap-1">
-                  <Receipt className="h-3 w-3" />
-                  {client.gst_number}
-                </span>
-              )}
+  <span className="inline-flex items-center gap-1">
+    <Receipt className="h-3 w-3" />
+    {client.gst_number}
+  </span>
+)}
+
+{client.pan_number && (
+  <span className="inline-flex items-center gap-1">
+    <Receipt className="h-3 w-3" />
+    {client.pan_number}
+  </span>
+)}
+              
             </div>
             {client.tags.length > 0 && (
               <div className="mt-1 flex flex-wrap gap-1">
