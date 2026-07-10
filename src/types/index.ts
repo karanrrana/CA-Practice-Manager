@@ -148,11 +148,6 @@ export interface ClientInput {
   name: string;
   email: string;
   phone: string;
-
-  gst_number: string;
-  pan_number: string;
-
-  address: string;
   status: CompanyStatus;
   tags: string[];
 }
@@ -161,7 +156,6 @@ export interface ClientContactInput {
   name: string;
   email: string;
   phone: string;
-  employee_id: string;
   designation: string;
   department: string;
   pan_number: string;

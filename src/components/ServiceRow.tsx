@@ -9,6 +9,7 @@ import {
   User,
 } from "lucide-react";
 import { toast } from "sonner";
+import { CalendarDays, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { StatusPill } from "@/components/StatusPill";
@@ -159,20 +160,29 @@ export function ServiceRow({
   )}
 </button>
 
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <User className="h-3.5 w-3.5" />
-          {service.assigned_to || "Unassigned"}
-        </div>
+        <div className="flex flex-col gap-1 text-xs">
 
-        <div
-          className={cn(
-            "text-xs",
-            overdue ? "font-semibold text-destructive" : "text-muted-foreground",
-          )}
-        >
-          Due {formatDate(service.due_date)}
-          {overdue && " · Overdue"}
-        </div>
+  <div className="flex items-center gap-1.5 text-muted-foreground">
+    <User className="h-3.5 w-3.5" />
+    <span>{service.assigned_to || "Unassigned"}</span>
+  </div>
+
+  <div className="flex items-center gap-1.5 text-muted-foreground">
+    <CalendarDays className="h-3.5 w-3.5" />
+    <span>
+      Due {formatDate(service.due_date)}
+      {overdue && " · Overdue"}
+    </span>
+  </div>
+
+  {service.completed_at && (
+    <div className="flex items-center gap-1.5 text-green-600">
+      <CheckCircle2 className="h-3.5 w-3.5" />
+      <span>Completed {formatDate(service.completed_at)}</span>
+    </div>
+  )}
+
+</div>
 
         <div className="flex items-center gap-1.5">
 

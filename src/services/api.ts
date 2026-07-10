@@ -31,9 +31,6 @@ export async function createClient(input: ClientInput): Promise<Client> {
       name: input.name,
       email: input.email || null,
       phone: input.phone || null,
-      gst_number: input.gst_number || null,
-      pan_number: input.pan_number || null,
-      address: input.address || null,
       status: input.status,
       tags: input.tags ?? [],
     })
@@ -50,9 +47,6 @@ export async function updateClient(id: string, input: ClientInput): Promise<Clie
       name: input.name,
       email: input.email || null,
       phone: input.phone || null,
-      gst_number: input.gst_number || null,
-      pan_number: input.pan_number || null,
-      address: input.address || null,
       status: input.status,
       tags: input.tags ?? [],
     })
@@ -81,7 +75,6 @@ function contactPayload(input: ClientContactInput) {
     name: input.name,
     email: input.email || null,
     phone: input.phone || null,
-    employee_id: input.employee_id || null,
     designation: input.designation || null,
     department: input.department || null,
     pan_number: input.pan_number || null,
@@ -240,6 +233,11 @@ export async function updateService(
 
       status: input.status,
 
+        completed_at:
+    input.status === "Completed"
+      ? new Date().toISOString()
+      : null,
+
       assigned_staff_id: input.assigned_staff_id || null,
 
       supporting_staff_id: input.supporting_staff_id || null,
@@ -324,6 +322,7 @@ export async function updateServiceStatus(
     .eq("id", id)
     .select()
     .single();
+    console.log("Updated service:", data);
 
   if (error) throw error;
 

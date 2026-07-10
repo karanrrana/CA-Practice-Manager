@@ -58,9 +58,6 @@ export function ClientForm({
       name: "",
       email: "",
       phone: "",
-      gst_number: "",
-      pan_number: "",
-      address: "",
       status: "Active",
       tags: [],
     },
@@ -73,9 +70,6 @@ export function ClientForm({
         name: client?.name ?? "",
         email: client?.email ?? "",
         phone: client?.phone ?? "",
-        gst_number: client?.gst_number ?? "",
-        pan_number: client?.pan_number ?? "",
-        address: client?.address ?? "",
         status: client?.status ?? "Active",
         tags: client?.tags ?? [],
       });
@@ -128,58 +122,6 @@ export function ClientForm({
     </Field>
 
   </div>
-
-  <div className="grid grid-cols-2 gap-5">
-
-    <Field
-      label="GST Number"
-      error={errors.gst_number?.message}
-    >
-      <Input
-        {...register("gst_number")}
-        placeholder="22AAAAA0000A1Z5"
-        className="uppercase h-11 rounded-xl"
-        onChange={(e) => {
-          e.target.value = e.target.value
-            .toUpperCase()
-            .replace(/\s/g, "");
-
-          register("gst_number").onChange(e);
-        }}
-      />
-    </Field>
-
-    <Field
-      label="PAN Number"
-      error={errors.pan_number?.message}
-    >
-      <Input
-        {...register("pan_number")}
-        placeholder="ABCDE1234F"
-        className="uppercase h-11 rounded-xl"
-        onChange={(e) => {
-          e.target.value = e.target.value
-            .toUpperCase()
-            .replace(/\s/g, "");
-
-          register("pan_number").onChange(e);
-        }}
-      />
-    </Field>
-
-  </div>
-
-  <Field
-    label="Registered Address"
-    error={errors.address?.message}
-  >
-    <Textarea
-      {...register("address")}
-      placeholder="Registered office address"
-      rows={3}
-      className="rounded-xl"
-    />
-  </Field>
 
   <div className="grid grid-cols-2 gap-5">
 

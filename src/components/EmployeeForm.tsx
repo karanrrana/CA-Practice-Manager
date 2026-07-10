@@ -37,31 +37,29 @@ export function EmployeeForm({
   } = useForm<EmployeeFormValues>({
     resolver: zodResolver(employeeSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      employee_id: "",
-      designation: "",
-      department: "",
-      pan_number: "",
-      aadhaar_number: "",
-      notes: "",
-    },
+  name: "",
+  email: "",
+  phone: "",
+  designation: "",
+  department: "",
+  pan_number: "",
+  aadhaar_number: "",
+  notes: "",
+},
   });
 
   useEffect(() => {
     if (open) {
       reset({
-        name: employee?.name ?? "",
-        email: employee?.email ?? "",
-        phone: employee?.phone ?? "",
-        employee_id: employee?.employee_id ?? "",
-        designation: employee?.designation ?? "",
-        department: employee?.department ?? "",
-        pan_number: employee?.pan_number ?? "",
-        aadhaar_number: employee?.aadhaar_number ?? "",
-        notes: employee?.notes ?? "",
-      });
+  name: employee?.name ?? "",
+  email: employee?.email ?? "",
+  phone: employee?.phone ?? "",
+  designation: employee?.designation ?? "",
+  department: employee?.department ?? "",
+  pan_number: employee?.pan_number ?? "",
+  aadhaar_number: employee?.aadhaar_number ?? "",
+  notes: employee?.notes ?? "",
+});
     }
   }, [open, employee, reset]);
 
@@ -197,15 +195,6 @@ export function EmployeeForm({
 
       </div>
 
-      {/* Internal ID */}
-
-      <Field label="Internal ID" error={errors.employee_id?.message}>
-        <Input
-          {...register("employee_id")}
-          placeholder="EMP-001"
-          className="h-11 rounded-xl"
-        />
-      </Field>
 
       {/* Notes */}
 

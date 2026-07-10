@@ -96,9 +96,19 @@ export function TaskCard({
   >
     <CalendarDays className="h-4 w-4" />
 
-    <span>
-      Due {formatDate(service.due_date)}
-    </span>
+    <div className="flex flex-col">
+
+  <span className="text-muted-foreground">
+    Due {formatDate(service.due_date)}
+  </span>
+
+  {service.completed_at && (
+  <span className="text-xs font-medium text-green-600 mt-1">
+    ✓ Completed {service.completed_at}
+  </span>
+)}
+
+</div>
 
   </div>
 
