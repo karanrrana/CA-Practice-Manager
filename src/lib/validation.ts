@@ -102,59 +102,92 @@ export const clientContactSchema = z.object({
 // Alias
 export const employeeSchema = clientContactSchema;
 
-export const serviceSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, "Service name is required")
-    .max(120),
+export const serviceSchema = z
+  .object({
+    name: z
+      .string()
+      .trim()
+      .min(1, "Service name is required")
+      .max(120),
 
-  status: z.enum([
-    "Not Started",
-    "In Progress",
-    "Pending Review",
-    "Completed",
-  ]),
+    status: z.enum([
+      "Not Started",
+      "In Progress",
+      "Pending Review",
+      "Completed",
+    ]),
 
-  assigned_staff_id: z
-    .string()
-    .trim()
-    .max(80)
-    .or(z.literal("")),
+    assigned_staff_id: z
+      .string()
+      .trim()
+      .max(80)
+      .or(z.literal("")),
 
-  supporting_staff_id: z
-    .string()
-    .trim()
-    .max(80)
-    .or(z.literal("")),
+    supporting_staff_id: z
+      .string()
+      .trim()
+      .max(80)
+      .or(z.literal("")),
 
-  due_date: z
-    .string()
-    .min(1, "Due date is required")
-    .refine((v) => {
-      const d = new Date(v);
-      return !isNaN(d.getTime()) && d >= todayStr();
-    }, "Due date cannot be earlier than today"),
+    due_date: z
+      .string()
+      .min(1, "Due date is required")
+      .refine((v) => {
+        const d = new Date(v);
 
-  // Recurring Service
+        return (
+          !isNaN(d.getTime()) &&
+          d >= todayStr()
+        );
+      }, "Due date cannot be earlier than today"),
 
-  is_recurring: z.boolean(),
+    // ----------------------------
+    // Completion Date
+    // ----------------------------
 
-  recurrence: z.enum([
-    "None",
-    "Monthly",
-    "Quarterly",
-    "Half-Yearly",
-    "Yearly",
-  ]),
+    completed_at: z
+      .string()
+      .or(z.literal(""))
+      .optional(),
 
-  recurring_status: z.enum([
-    "Active",
-    "Paused",
-  ]),
+    // ----------------------------
+    // Recurring Service
+    // ----------------------------
 
-  recurrence_interval: z.number(),
-});
+    is_recurring: z.boolean(),
+
+    recurrence: z.enum([
+      "None",
+      "Monthly",
+      "Quarterly",
+      "Half-Yearly",
+      "Yearly",
+    ]),
+
+    recurring_status: z.enum([
+      "Active",
+      "Paused",
+    ]),
+
+    recurrence_interval: z.number(),
+  })
+  .refine(
+    (values) => {
+      if (
+        values.status !== "Completed" &&
+        values.completed_at
+      ) {
+        return false;
+      }
+
+      return true;
+    },
+    {
+      message:
+        "Completion date can only be set for completed services",
+      path: ["completed_at"],
+    },
+  );
 
 export const staffSchema = z.object({
   full_name: z

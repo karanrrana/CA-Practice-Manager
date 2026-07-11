@@ -91,7 +91,7 @@ export function ServiceForm({
   assigned_staff_id: "",
   supporting_staff_id: "",
   due_date: "",
-
+  completed_at: "",
   is_recurring: false,
 recurrence: "None",
 recurrence_interval: 0,
@@ -108,6 +108,9 @@ recurring_status: "Active",
   assigned_staff_id: service?.assigned_staff_id ?? "",
   supporting_staff_id: service?.supporting_staff_id ?? "",
   due_date: service?.due_date ?? "",
+  completed_at: service?.completed_at
+  ? service.completed_at.split("T")[0]
+  : "",
 
   is_recurring: service?.is_recurring ?? false,
 
@@ -353,6 +356,30 @@ recurring_status:
         </div>
 
       </div>
+
+      {/* COMPLETION DATE */}
+
+{watch("status") === "Completed" && (
+  <div className="space-y-1.5">
+    <Label>Completion Date (optional)</Label>
+
+    <Input
+      type="date"
+      {...register("completed_at")}
+      max={new Date().toISOString().split("T")[0]}
+    />
+
+    <p className="text-xs text-muted-foreground">
+      Leave empty to use today's date.
+    </p>
+
+    {errors.completed_at && (
+      <p className="text-xs text-destructive">
+        {errors.completed_at.message}
+      </p>
+    )}
+  </div>
+)}
 
       {/* Staff Assignment */}
 

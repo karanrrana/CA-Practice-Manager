@@ -172,6 +172,7 @@ export interface ServiceInput {
   supporting_staff_id: string;
 
   due_date: string;
+  completed_at?: string;
 
   // ------------------------
   // Recurring Service

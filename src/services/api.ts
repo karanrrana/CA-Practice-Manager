@@ -164,6 +164,15 @@ export async function createService(
 
       status: input.status,
 
+      completed_at:
+  input.status === "Completed"
+    ? input.completed_at
+      ? new Date(
+          `${input.completed_at}T12:00:00`,
+        ).toISOString()
+      : new Date().toISOString()
+    : null,
+
       assigned_staff_id: input.assigned_staff_id || null,
 
       supporting_staff_id: input.supporting_staff_id || null,
@@ -189,26 +198,47 @@ export async function createService(
 
   if (error) throw error;
 
+  const createdService = data as Service;
+
+  // --------------------------
+  // Create Next Recurring Cycle
+  // --------------------------
+
+  if (
+    createdService.status === "Completed" &&
+    createdService.is_recurring &&
+    createdService.recurring_status === "Active"
+  ) {
+    await createNextRecurringService(createdService);
+  }
+
+  // --------------------------
   // Notify Assigned Staff
+  // --------------------------
+
   await notifyServiceAssignment(
-    data.assigned_staff_id,
-    data.id,
-    data.name,
+    createdService.assigned_staff_id,
+    createdService.id,
+    createdService.name,
   );
 
-  // Notify Supporting Staff (if different)
+  // --------------------------
+  // Notify Supporting Staff
+  // --------------------------
+
   if (
-    data.supporting_staff_id &&
-    data.supporting_staff_id !== data.assigned_staff_id
+    createdService.supporting_staff_id &&
+    createdService.supporting_staff_id !==
+      createdService.assigned_staff_id
   ) {
     await notifyServiceAssignment(
-      data.supporting_staff_id,
-      data.id,
-      `${data.name} (Supporting Staff)`,
+      createdService.supporting_staff_id,
+      createdService.id,
+      `${createdService.name} (Supporting Staff)`,
     );
   }
 
-  return data as Service;
+  return createdService;
 }
 
 export async function updateService(
@@ -233,10 +263,15 @@ export async function updateService(
 
       status: input.status,
 
-        completed_at:
-    input.status === "Completed"
-      ? new Date().toISOString()
-      : null,
+       completed_at:
+  input.status === "Completed"
+    ? input.completed_at
+      ? new Date(
+          `${input.completed_at}T12:00:00`,
+        ).toISOString()
+      : existing.completed_at ??
+        new Date().toISOString()
+    : null,
 
       assigned_staff_id: input.assigned_staff_id || null,
 
@@ -257,6 +292,19 @@ export async function updateService(
     .single();
 
   if (error) throw error;
+
+  // ----------------------------------------
+// Create next recurring service
+// ----------------------------------------
+
+if (
+  existing.status !== "Completed" &&
+  data.status === "Completed" &&
+  data.is_recurring &&
+  data.recurring_status === "Active"
+) {
+  await createNextRecurringService(data);
+}
 
   // -------------------------
   // Assignment Changed
