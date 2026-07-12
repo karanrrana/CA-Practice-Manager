@@ -562,6 +562,10 @@ if (existingPan || existingAadhaar) {
         }
         toast.success("Service updated");
       } else if (serviceEmployeeId) {
+        console.log(
+  "CREATE SERVICE VALUES:",
+  values,
+);
         const svc = await createService(serviceEmployeeId, values, staffId);
         await logActivity(svc.id, staffId, username, "Created", "Service created");
         if (values.assigned_staff_id) {
@@ -585,6 +589,7 @@ if (existingPan || existingAadhaar) {
       setSubmitting(false);
     }
   };
+  
 
   const confirmDelete = async () => {
     if (!deleteTarget) return;
@@ -609,6 +614,7 @@ if (existingPan || existingAadhaar) {
     } finally {
       setSubmitting(false);
     }
+    
   };
 
   const resetFilters = () => {

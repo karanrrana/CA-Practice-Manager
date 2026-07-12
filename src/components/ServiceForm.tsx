@@ -290,14 +290,19 @@ recurring_status:
             <Label>Status</Label>
 
             <Controller
-              control={control}
-              name="status"
-              render={({ field }) => (
+  control={control}
+  name="status"
+  render={({ field }) => (
+    <Select
+      value={field.value}
+      onValueChange={(value) => {
+        field.onChange(value);
 
-                <Select
-                  value={field.value}
-                  onValueChange={field.onChange}
-                >
+        if (value !== "Completed") {
+          setValue("completed_at", "");
+        }
+      }}
+    >
 
                   <SelectTrigger className="h-11 rounded-xl">
 

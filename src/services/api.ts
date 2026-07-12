@@ -155,6 +155,23 @@ export async function createService(
   input: ServiceInput,
   createdByStaffId: string | null,
 ): Promise<Service> {
+  const completedAt =
+    input.status === "Completed"
+      ? input.completed_at
+        ? input.completed_at
+        : new Date().toISOString()
+      : null;
+
+  console.log(
+    "CREATE INPUT COMPLETION DATE:",
+    input.completed_at,
+  );
+
+  console.log(
+    "FINAL COMPLETION DATE:",
+    completedAt,
+  );
+
   const { data, error } = await db
     .from("services")
     .insert({
@@ -164,34 +181,27 @@ export async function createService(
 
       status: input.status,
 
-      completed_at:
-  input.status === "Completed"
-    ? input.completed_at
-      ? new Date(
-          `${input.completed_at}T12:00:00`,
-        ).toISOString()
-      : new Date().toISOString()
-    : null,
+      completed_at: completedAt,
 
-      assigned_staff_id: input.assigned_staff_id || null,
+      assigned_staff_id:
+        input.assigned_staff_id || null,
 
-      supporting_staff_id: input.supporting_staff_id || null,
+      supporting_staff_id:
+        input.supporting_staff_id || null,
 
       created_by_staff_id: createdByStaffId,
 
       due_date: input.due_date || null,
 
-      // --------------------------
-      // Recurring Service
-      // --------------------------
-
       is_recurring: input.is_recurring,
 
       recurrence: input.recurrence,
 
-      recurrence_interval: input.recurrence_interval,
+      recurrence_interval:
+        input.recurrence_interval,
 
-      next_due_date: input.due_date || null,
+      next_due_date:
+        input.due_date || null,
     })
     .select()
     .single();
@@ -200,31 +210,26 @@ export async function createService(
 
   const createdService = data as Service;
 
-  // --------------------------
-  // Create Next Recurring Cycle
-  // --------------------------
+  console.log(
+    "CREATED SERVICE RESULT:",
+    createdService,
+  );
 
   if (
     createdService.status === "Completed" &&
     createdService.is_recurring &&
     createdService.recurring_status === "Active"
   ) {
-    await createNextRecurringService(createdService);
+    await createNextRecurringService(
+      createdService,
+    );
   }
-
-  // --------------------------
-  // Notify Assigned Staff
-  // --------------------------
 
   await notifyServiceAssignment(
     createdService.assigned_staff_id,
     createdService.id,
     createdService.name,
   );
-
-  // --------------------------
-  // Notify Supporting Staff
-  // --------------------------
 
   if (
     createdService.supporting_staff_id &&
