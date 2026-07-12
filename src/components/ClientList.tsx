@@ -79,7 +79,6 @@ export function ClientList() {
   const [employeeDialog, _setEmployeeDialog] = useState(false);
 
 const setEmployeeDialog = (value: boolean) => {
-  console.log("employeeDialog ->", value);
   _setEmployeeDialog(value);
 };
   const [employeeCompanyId, setEmployeeCompanyId] = useState<string | null>(null);
@@ -412,7 +411,7 @@ if (existingPan || existingAadhaar) {
     existingAadhaar &&
     existingPan.id !== existingAadhaar.id
   ) {
-    console.log("Duplicate dialog opening...");
+
     setDuplicateDialog({
       open: true,
 
@@ -562,10 +561,6 @@ if (existingPan || existingAadhaar) {
         }
         toast.success("Service updated");
       } else if (serviceEmployeeId) {
-        console.log(
-  "CREATE SERVICE VALUES:",
-  values,
-);
         const svc = await createService(serviceEmployeeId, values, staffId);
         await logActivity(svc.id, staffId, username, "Created", "Service created");
         if (values.assigned_staff_id) {
